@@ -1,6 +1,5 @@
 "use client"; 
 import React from "react";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import Image from "next/image";
 import logo from './atmos.png';
 import dynamic from "next/dynamic";

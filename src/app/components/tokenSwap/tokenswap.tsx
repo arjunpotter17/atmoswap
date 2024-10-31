@@ -25,6 +25,7 @@ const TokenSwap = () => {
   const [buyingAmount, setBuyingAmount] = useState<string>("");
   const [isHovered, setIsHovered] = useState(false);
   const [allowFetch, setAllowFetch] = useState(false);
+  // eslint-disable-next-line
   const [routes, setRoutes] = useState<any[]>([]);
   const [showRoutesModal, setShowRoutesModal] = useState(false);
   const [isSettingsOpen, setSettingsOpen] = useState(false);
@@ -36,6 +37,7 @@ const TokenSwap = () => {
   const [minimumReceived, setMinimumReceived] = useState<number | null>(null);
   const [slippage, setSlippage] = useState<number | null>(null);
   const [resetCounter, setResetCounter] = useState(false);
+  // eslint-disable-next-line
   const [quoteResponse, setQuoteResponse] = useState<any | null>(null);
   const [countdown, setCountdown] = useState(15);
   const wrapperRef = useRef(null);

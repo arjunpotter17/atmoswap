@@ -1,5 +1,4 @@
-import { PublicKey } from "@solana/web3.js";
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const swapTransaction = async (swapData: any, publicKey: string) => {
   const swapResponse = await fetch("/api/swap-inst-tx", {
     method: "POST",

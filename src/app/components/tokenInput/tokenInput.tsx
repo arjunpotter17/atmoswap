@@ -182,7 +182,7 @@ export default function TokenInput({
               ${" "}
               {selectedToken?.name !== "SOL"
                 ? amount
-                : parseFloat(amount) * 180}{" "}
+                : (parseFloat(amount) * 180).toFixed(2)}{" "}
               {selectedToken?.name === "SOL" && (
                 <TooltipProvider>
                 <Tooltip>

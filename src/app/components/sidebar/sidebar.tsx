@@ -121,7 +121,7 @@ export const Sidebar = ({ togglePanel, setSelectedSlippage }: SidebarProps) => {
                     <InfoIcon />
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Set the maximum slippage you'd like to tolerate.</p>
+                    <p>Set the maximum slippage you&apos;d like to tolerate.</p>
                   </TooltipContent>
                 </Tooltip>
                 </TooltipProvider>
