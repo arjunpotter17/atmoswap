@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import TokenInput from "../tokenInput/tokenInput";
 import { SwapIcon } from "@/app/icons/swap.icon";
 import { stables, TokenInfo } from "@/app/constants/tokens";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { toast } from "sonner";
 import { checkPrice } from "@/app/utils/fetchPrice";
 import { useDebounce } from "@/app/utils/debounce";
@@ -11,6 +11,11 @@ import { CogIcon } from "@/app/icons/cog.icon";
 import { AnimatePresence, motion } from "framer-motion";
 import Sidebar from "../sidebar/sidebar";
 import { DropdownIcon } from "@/app/icons/dropdown.icon";
+import { swapTransaction } from "@/app/utils/swapTokens";
+import {
+  TransactionConfirmationStrategy,
+  VersionedTransaction,
+} from "@solana/web3.js";
 
 const TokenSwap = () => {
   const [active, setActive] = useState<string | null>(null);
@@ -31,9 +36,11 @@ const TokenSwap = () => {
   const [minimumReceived, setMinimumReceived] = useState<number | null>(null);
   const [slippage, setSlippage] = useState<number | null>(null);
   const [resetCounter, setResetCounter] = useState(false);
+  const [quoteResponse, setQuoteResponse] = useState<any | null>(null);
   const [countdown, setCountdown] = useState(15);
   const wrapperRef = useRef(null);
-  const { connected } = useWallet();
+  const { connected, publicKey, signTransaction } = useWallet();
+  const { connection } = useConnection();
 
   // Create debounced values
   const debouncedSellingAmount = useDebounce(sellingAmount, 500);
@@ -41,8 +48,9 @@ const TokenSwap = () => {
 
   //clickoutside for dorpdown
   useEffect(() => {
-    function handleClickOutside(event: any) {
-      if (event.target.closest(".token-swap-container") === null) {
+    function handleClickOutside(event: MouseEvent) {
+      const target = event.target as Element;
+      if (target?.closest(".token-swap-container") === null) {
         setActive(null);
       }
     }
@@ -80,16 +88,60 @@ const TokenSwap = () => {
     setSellingAmount(buyingAmount);
     setBuyingAmount(tempAmount);
     setAllowFetch(true);
-    type ? fetchPrice(type) : null;
+    if (type) {
+      fetchPrice(type);
+    }
   };
 
   //function to swap tokens
-  const handleSwapTokens = () => {
-    if (!connected) {
+  const handleSwapTokens = async () => {
+    if (!connected || !publicKey || !signTransaction) {
+      console.log(connected, publicKey, signTransaction);
       toast.error("Please connect your wallet first");
       return;
     }
+
+    if (!quoteResponse) {
+      toast.error("Please enter details to swap");
+      return;
+    }
     const swappingToast = toast.loading("Swapping tokens...");
+    try {
+      const tx = await swapTransaction(quoteResponse, publicKey.toBase58());
+      const deserializedSwap = VersionedTransaction.deserialize(tx);
+      const blockhash = (await connection.getLatestBlockhash()).blockhash;
+      deserializedSwap.message.recentBlockhash = blockhash;
+      const signedTx = await signTransaction(deserializedSwap);
+      const serializedTx = signedTx.serialize();
+      const signature = await connection.sendRawTransaction(serializedTx, {
+        skipPreflight: false,
+        preflightCommitment: "confirmed",
+      });
+      const latestBlockhash = await connection.getLatestBlockhash();
+      const confirmationStrategy: TransactionConfirmationStrategy = {
+        signature: signature,
+        blockhash: latestBlockhash.blockhash,
+        lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
+      };
+
+      const confirmation = await connection.confirmTransaction(
+        confirmationStrategy,
+        "processed"
+      );
+
+      if (confirmation.value.err) {
+        toast.error("Transaction failed");
+        return;
+      }
+
+      console.log("Signature: ", signature);
+    } catch (error: unknown) {
+      console.log(error);
+      toast.error("Failed to swap tokens");
+    } finally {
+      toast.dismiss(swappingToast);
+    }
+
     console.log("Swapping tokens");
   };
 
@@ -106,11 +158,12 @@ const TokenSwap = () => {
           buyingToken,
           parseFloat(debouncedBuyingAmount),
           sellingToken,
-          50
+          slippage ? slippage*100 : 50
         );
         if (data) {
           setSellingAmount(data.price.toFixed(3).toString());
           setRoutes(data.routes);
+          setQuoteResponse(data.quoteResponse);
           // Calculate Minimum Received
           const calculatedMinReceived = data.price - data.price * 0.005;
           setMinimumReceived(calculatedMinReceived);
@@ -130,11 +183,12 @@ const TokenSwap = () => {
           sellingToken,
           parseFloat(debouncedSellingAmount),
           buyingToken,
-          50
+          slippage ? slippage*100 : 50
         );
         if (data) {
           setBuyingAmount(data.price.toFixed(3).toString());
           setRoutes(data.routes);
+          setQuoteResponse(data.quoteResponse);
           // Calculate Minimum Received
           const calculatedMinReceived = data.price - data.price * 0.005;
           setMinimumReceived(calculatedMinReceived);
@@ -290,7 +344,7 @@ const TokenSwap = () => {
                 ? `${routes[0].swapInfo.label}, ${
                     routes[1].swapInfo.label
                   } + (${routes.length - 2})`
-                : routes.map((route, index) => route.swapInfo.label).join(", ")}
+                : routes.map((route) => route.swapInfo.label).join(", ")}
             </button>
             <p className="text-xs text-atmos-grey-text">
               Refresh in{" "}
@@ -301,7 +355,7 @@ const TokenSwap = () => {
 
         <button
           className="h-12 bg-gradient-to-r from-atmos-secondary-teal via-atmos-primary-green to-atmos-secondary-teal rounded-3xl text-white font-bold transition-transform duration-300 hover:scale-95"
-          onClick={handleSwapTokens}
+          onClick={() => handleSwapTokens()}
         >
           Swap Tokens
         </button>

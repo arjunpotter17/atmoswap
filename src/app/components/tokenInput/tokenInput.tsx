@@ -3,9 +3,15 @@ import { stables, TokenInfo } from "@/app/constants/tokens";
 import { DropdownIcon } from "@/app/icons/dropdown.icon";
 import React, { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import { InfoIcon } from "@/app/icons/info.icon";
 import Spinner from "../spinner/spinner";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface TokenInputProps {
   type: string;
@@ -32,7 +38,7 @@ export default function TokenInput({
   setActive,
   setAmount,
   setAllowFetch,
-  setRefreshType
+  setRefreshType,
 }: TokenInputProps) {
   const [showModal, setShowModal] = useState(false);
   const text = type === "selling" ? "You're Selling" : "You're Buying";
@@ -59,7 +65,12 @@ export default function TokenInput({
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(e.target.value);
-    type === "selling" ? setRefreshType("buying") : setRefreshType("selling");
+    // @typescript-eslint/no-unused-expressions
+    if (type === "selling") {
+      setRefreshType("buying");
+    } else {
+      setRefreshType("selling");
+    }
     setAllowFetch(true);
   };
 
@@ -72,7 +83,10 @@ export default function TokenInput({
   // Click outside handler
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
         setShowModal(false); // Close modal if clicked outside
       }
     };
@@ -102,7 +116,9 @@ export default function TokenInput({
       </div>
 
       <div className="flex items-center mt-2">
-        <div className="relative" ref={modalRef}> {/* Attach ref here */}
+        <div className="relative" ref={modalRef}>
+          {" "}
+          {/* Attach ref here */}
           <div
             onClick={() => {
               setActive(type);
@@ -147,15 +163,41 @@ export default function TokenInput({
           )}
         </div>
         <div className="flex flex-col items-end flex-1">
-          {isLoading ? <div><Spinner size={25}/> </div>: <input
-            value={amount}
-            onClick={() => setActive(type)}
-            onChange={handleAmountChange}
-            type="text"
-            placeholder="0.00"
-            className="bg-transparent outline-none ring-0 text-white text-right w-full p-2 rounded-lg font-bold text-xl "
-          />}
-          {amount && !isLoading && <p className="text-xs text-atmos-grey-text flex items-center gap-x-2">$ {selectedToken?.name !== 'SOL' ? amount : parseFloat(amount) * 180} {selectedToken?.name === 'SOL' && <InfoIcon/>}</p>}
+          {isLoading ? (
+            <div>
+              <Spinner size={25} />{" "}
+            </div>
+          ) : (
+            <input
+              value={amount}
+              onClick={() => setActive(type)}
+              onChange={handleAmountChange}
+              type="text"
+              placeholder="0.00"
+              className="bg-transparent outline-none ring-0 text-white text-right w-full p-2 rounded-lg font-bold text-xl "
+            />
+          )}
+          {amount && !isLoading && (
+            <div className="text-xs text-atmos-grey-text flex items-center gap-x-2 cursor-pointer">
+              ${" "}
+              {selectedToken?.name !== "SOL"
+                ? amount
+                : parseFloat(amount) * 180}{" "}
+              {selectedToken?.name === "SOL" && (
+                <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <InfoIcon />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Value is calculated with a mock data of $180 per SOL</p>
+                  </TooltipContent>
+                </Tooltip>
+                </TooltipProvider>
+              
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

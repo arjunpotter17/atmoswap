@@ -17,11 +17,9 @@ export const checkPrice = async (tokenA:TokenInfo, tokenAmount:number, tokenB:To
       const response = await swapFunds(lamports, tokenA.address, tokenB.address, slippage);
       const { routePlan, outAmount } = response;
       const priceInOutputToken = outAmount / 10 ** tokenB.decimals;
-      return { price: priceInOutputToken, routes:routePlan };
-    } catch (error) {
+      return { price: priceInOutputToken, routes:routePlan, quoteResponse:response };
+    } catch (error:unknown) {
+      console.log(error);
       toast.error('Error fetching price');
-      
-    } finally {
-    
     }
   };

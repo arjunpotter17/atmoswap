@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { InfoIcon } from "@/app/icons/info.icon";
 import { CloseIcon } from "@/app/icons/close.icon";
+import { TooltipContent, Tooltip, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 type SidebarProps = {
   isOpen: boolean;
@@ -113,7 +114,18 @@ export const Sidebar = ({ togglePanel, setSelectedSlippage }: SidebarProps) => {
         {isDynamic && (
           <div className="mt-4">
             <p className="font-medium flex items-center text-sm text-atmos-grey-text gap-x-2">
-              Max <span><InfoIcon /></span>
+              Max <span>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <InfoIcon />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Set the maximum slippage you'd like to tolerate.</p>
+                  </TooltipContent>
+                </Tooltip>
+                </TooltipProvider>
+              </span>
             </p>
             <div className="relative">
               <input
@@ -135,7 +147,18 @@ export const Sidebar = ({ togglePanel, setSelectedSlippage }: SidebarProps) => {
           <>
           <div className="flex justify-between items-center">
             <p className="font-medium flex items-center text-sm text-atmos-grey-text gap-x-2">
-              Fixed <span><InfoIcon /></span>
+              Fixed <span>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <InfoIcon />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>The exact slippage you want to incorporate</p>
+                  </TooltipContent>
+                </Tooltip>
+                </TooltipProvider>
+              </span>
             </p>
             <div className="flex gap-x-3">
               {["0.5%", "1%"].map((option) => (

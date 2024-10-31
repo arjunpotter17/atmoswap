@@ -148,7 +148,8 @@ export default function CandlestickChart() {
 
       const candlestick = param.seriesData.get(candlestickSeries);
       if (candlestick) {
-        const { open, high, low, close } = candlestick as any;
+        const { open, high, low, close } = candlestick as { open: number; high: number; low: number; close: number };
+
         setOhlc({
           open: parseFloat(open.toFixed(3)),
           high: parseFloat(high.toFixed(3)),

@@ -1,20 +1,8 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "./components/navbar/navbar";
 import { SolanaProvider } from "./components/SolanaProvider/solanaProvider";
 import { Toaster } from "sonner";
-
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
 
 export const metadata: Metadata = {
   title: "Atmos swap",
@@ -28,17 +16,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className="w-[100vw] h-screen bg-atmos-bg-black text-white flex flex-col items-center px-4 md:px-0"
-      >
-            <SolanaProvider>
-            <Toaster visibleToasts={8} richColors expand pauseWhenPageIsHidden />
-        <Navbar/>
+      <body className="w-[100vw] h-screen bg-atmos-bg-black text-white flex flex-col items-center px-4 md:px-0">
+        <SolanaProvider>
+          <Toaster visibleToasts={8} richColors expand pauseWhenPageIsHidden />
+          <Navbar />
+
+          <div className="min-w-full pt-[100px]">{children}</div>
         </SolanaProvider>
-        <div className="min-w-full pt-[100px]">
-        {children}
-        </div>
-        
       </body>
     </html>
   );
