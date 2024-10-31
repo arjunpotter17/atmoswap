@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+button.wallet-adapter-button-trigger {
+  @apply text-sm md:text-lg bg-gradient-to-r from-atmos-secondary-teal via-atmos-primary-green to-atmos-secondary-teal text-atmos-navbar-bg font-semibold rounded-3xl transition-transform duration-300 hover:scale-95; /* etc */
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
