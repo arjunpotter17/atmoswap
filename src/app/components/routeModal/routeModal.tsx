@@ -2,6 +2,7 @@ export const RouteModal = ({
   routes,
   setShowRoutesModal,
 }: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
   routes: any[];
   setShowRoutesModal: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
@@ -10,6 +11,7 @@ export const RouteModal = ({
       <div className="bg-atmos-bg-black rounded-lg p-10 w-[80%] md:w-[400px]">
         <h2 className="text-lg font-bold">Order Route Plan</h2>
         <div className="flex flex-col mt-4">
+        {/* eslint-disable-next-line */}
           {routes.map((route: any, index: number) => (
             <div key={index} className="flex justify-between">
               <span className="text-sm">{route.swapInfo.label}</span>

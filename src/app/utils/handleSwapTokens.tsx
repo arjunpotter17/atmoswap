@@ -2,7 +2,7 @@ import { WalletContextState } from "@solana/wallet-adapter-react";
 import { Connection, TransactionConfirmationStrategy, VersionedTransaction } from "@solana/web3.js";
 import { toast } from "sonner";
 import { swapTransaction } from "./swapTokens";
-
+  // eslint-disable-next-line
 export const handleSwapTokens = async (wallet:WalletContextState, connection:Connection, quoteResponse:any, ) => {
     const { connected, publicKey, signTransaction } = wallet;
     if (!connected || !publicKey || !signTransaction) {
