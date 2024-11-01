@@ -15,6 +15,36 @@ import { handleSwapTokens } from "@/app/utils/handleSwapTokens";
 import { fetchPriceData } from "@/app/utils/fetchPrice";
 
 const TokenSwap = (): JSX.Element => {
+  type RouteData = {
+    inputMint: string;
+    inAmount: string;
+    outputMint: string;
+    outAmount: string;
+    otherAmountThreshold: string;
+    swapMode: "ExactIn" | "ExactOut"; // Assuming it can be either of these
+    slippageBps: number;
+    platformFee: null | string; // Assuming platformFee can also be a string
+    priceImpactPct: string;
+    routePlan: RoutePlan[];
+    contextSlot: number;
+    timeTaken: number;
+  };
+
+  type RouteSwapInfo = {
+    ammKey: string;
+    label: string;
+    inputMint: string;
+    outputMint: string;
+    inAmount: string;
+    outAmount: string;
+    feeAmount: string;
+    feeMint: string;
+  };
+
+  type RoutePlan = {
+    swapInfo: RouteSwapInfo;
+    percent: number;
+  };
   //states
   const [active, setActive] = useState<string | null>(null);
   const [sellingToken, setSellingToken] = useState<TokenInfo>(stables[1]);
@@ -24,7 +54,7 @@ const TokenSwap = (): JSX.Element => {
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [allowFetch, setAllowFetch] = useState<boolean>(false);
   // eslint-disable-next-line
-  const [routes, setRoutes] = useState<any[]>([]);
+  const [routes, setRoutes] = useState<RoutePlan[]>([]);
   const [showRoutesModal, setShowRoutesModal] = useState<boolean>(false);
   const [isSettingsOpen, setSettingsOpen] = useState<boolean>(false);
   const [isSellAmountLoading, setIsSellAmountLoading] =
@@ -181,7 +211,14 @@ const TokenSwap = (): JSX.Element => {
       </AnimatePresence>
 
       {showRoutesModal && (
-        <RouteModal routes={routes} setShowRoutesModal={setShowRoutesModal} />
+        <RouteModal
+          routeData={{
+            inputMint: sellingToken?.address || "", // Fallback in case address is undefined
+            outputMint: buyingToken?.address || "",
+            routePlan: routes, // Assuming `routes` is an array of routePlan objects
+          }}
+          setShowRoutesModal={setShowRoutesModal}
+        />
       )}
 
       <div className="flex flex-col gap-y-5 w-full md:w-[512px]">
