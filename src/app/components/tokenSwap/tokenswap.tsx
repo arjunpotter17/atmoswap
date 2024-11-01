@@ -15,21 +15,6 @@ import { handleSwapTokens } from "@/app/utils/handleSwapTokens";
 import { fetchPriceData } from "@/app/utils/fetchPrice";
 
 const TokenSwap = (): JSX.Element => {
-  type RouteData = {
-    inputMint: string;
-    inAmount: string;
-    outputMint: string;
-    outAmount: string;
-    otherAmountThreshold: string;
-    swapMode: "ExactIn" | "ExactOut"; // Assuming it can be either of these
-    slippageBps: number;
-    platformFee: null | string; // Assuming platformFee can also be a string
-    priceImpactPct: string;
-    routePlan: RoutePlan[];
-    contextSlot: number;
-    timeTaken: number;
-  };
-
   type RouteSwapInfo = {
     ammKey: string;
     label: string;

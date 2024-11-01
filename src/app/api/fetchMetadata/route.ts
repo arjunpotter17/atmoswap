@@ -33,7 +33,8 @@ export async function POST(req: Request) {
 
     const data = await response.json();
     return NextResponse.json(data); // Return the JSON response
-  } catch (error) {
+  } catch (error: unknown) {
+    console.log('Failed to fetch data:', error);
     return NextResponse.json({ error: 'Failed to fetch data' }, { status: 500 });
   }
 }
