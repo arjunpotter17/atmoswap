@@ -99,7 +99,7 @@ export default function TokenInput({
 
   return (
     <div
-      className={`bg-atmos-navbar-bg flex flex-col items-between justify-center px-5 py-7 rounded-[16px] border transition-all duration-200 ease-in ${
+      className={`bg-atmos-navbar-bg flex flex-col items-between min-h-[150px] justify-center px-5 py-7 rounded-[16px] border transition-all duration-200 ease-in ${
         isActive
           ? "border-atmos-secondary-teal shadow-even"
           : "border-gray-800 shadow-none"
@@ -162,7 +162,7 @@ export default function TokenInput({
             </div>
           )}
         </div>
-        <div className="flex flex-col items-end flex-1">
+        <div className="flex flex-col items-end flex-1 min-h-[65px]">
           {isLoading ? (
             <div>
               <Spinner size={25} />{" "}

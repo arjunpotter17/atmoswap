@@ -1,7 +1,8 @@
 // hooks/useDebounce.ts
 import { useEffect, useState } from 'react';
+import { TokenInfo } from '../constants/tokens';
 
-export const useDebounce = (value: string, delay: number) => {
+export const useDebounce = (value: string | TokenInfo, delay: number) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
   useEffect(() => {
