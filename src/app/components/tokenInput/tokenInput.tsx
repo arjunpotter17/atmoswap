@@ -3,7 +3,6 @@ import { stables, TokenInfo } from "@/app/constants/tokens";
 import { DropdownIcon } from "@/app/icons/dropdown.icon";
 import React, { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import { InfoIcon } from "@/app/icons/info.icon";
 import Spinner from "../spinner/spinner";
 import {
@@ -43,7 +42,6 @@ export default function TokenInput({
   const [showModal, setShowModal] = useState(false);
   const text = type === "selling" ? "You're Selling" : "You're Buying";
   const isActive = active === type;
-  const router = useRouter();
   const modalRef = useRef<HTMLDivElement | null>(null); // Ref for the dropdown
 
   const toggleModal = () => {
