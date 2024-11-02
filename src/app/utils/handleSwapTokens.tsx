@@ -6,10 +6,10 @@ import {
 } from "@solana/web3.js";
 import { toast } from "sonner";
 import { swapTransaction } from "./swapTokens";
-// eslint-disable-next-line
 export const handleSwapTokens = async (
   wallet: WalletContextState,
   connection: Connection,
+  // eslint-disable-next-line
   quoteResponse: any
 ) => {
   const { connected, publicKey, signTransaction } = wallet;
@@ -25,8 +25,7 @@ export const handleSwapTokens = async (
   }
   const swappingToast = toast.loading("Swapping tokens...");
   try {
-    let tx;
-    tx = await swapTransaction(quoteResponse, publicKey.toBase58());
+    const tx = await swapTransaction(quoteResponse, publicKey.toBase58());
     if (tx instanceof Error) {
       console.log(tx);
       toast.error(

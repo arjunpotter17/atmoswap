@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, ChangeEvent, useEffect } from "react";
+import React, { useState, ChangeEvent } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { InfoIcon } from "@/app/icons/info.icon";
