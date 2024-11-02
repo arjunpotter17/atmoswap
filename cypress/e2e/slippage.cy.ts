@@ -2,7 +2,7 @@
 //This file writes tests for all slippage selections in the slippage settings modal
 describe("Slippage settings tests", () => {
   beforeEach(() => {
-    cy.visit("http://localhost:3000");
+    cy.visit("https://atmoswap.vercel.app/");
     // Open the settings modal before each test
     cy.get('[data-testid="settings-button"]').click();
     cy.get('[data-testid="settings-modal"]').should("be.visible");

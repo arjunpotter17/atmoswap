@@ -65,14 +65,14 @@ export default function TokenInput({
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-  
+
     // Regular expression to allow only numbers and one decimal point
     const regex = /^\d*\.?\d*$/;
-  
+
     // If value matches the regex, update the amount
     if (regex.test(value)) {
       setAmount(value);
-  
+
       // Trigger appropriate refresh type
       if (type === "selling") {
         setRefreshType("buying");
@@ -85,7 +85,24 @@ export default function TokenInput({
 
   const handleActivityClick = () => {
     if (selectedToken?.address) {
-      router.push(`/chart/${selectedToken.address}`);
+      let coin: string;
+      // Construct the CoinGecko URL based on the mint address
+      switch (selectedToken.name) {
+        case "SOL":
+          coin = "solana";
+          break;
+        case "USD Coin":
+          coin = "usdc";
+          break;
+        case "USDT":
+          coin = "tether";
+          break;
+        default:
+          coin = "solana";
+          break;
+      }
+      const coingeckoUrl = `https://www.coingecko.com/en/coins/${coin}`;
+      window.open(coingeckoUrl, "_blank"); // Open in a new tab
     }
   };
 
@@ -143,7 +160,11 @@ export default function TokenInput({
                   className="w-5 h-5 mr-2"
                 />
               )}
-              <span data-testid={type === 'selling' ? 'inputA-drop' : 'inputB-drop'}>{selectedToken?.name}</span>
+              <span
+                data-testid={type === "selling" ? "inputA-drop" : "inputB-drop"}
+              >
+                {selectedToken?.name}
+              </span>
             </div>
 
             <span className="text-2xl">
@@ -178,7 +199,7 @@ export default function TokenInput({
             </div>
           ) : (
             <input
-              data-testid={type === 'selling' ? 'inputA' : 'inputB'}
+              data-testid={type === "selling" ? "inputA" : "inputB"}
               value={amount}
               onClick={() => setActive(type)}
               onChange={handleAmountChange}
@@ -196,16 +217,17 @@ export default function TokenInput({
                 : (parseFloat(amount) * 180).toFixed(2)}{" "}
               {selectedToken?.name === "SOL" && (
                 <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <InfoIcon />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Value is calculated with a mock data of $180 per SOL</p>
-                  </TooltipContent>
-                </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <InfoIcon />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>
+                        Value is calculated with a mock data of $180 per SOL
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
                 </TooltipProvider>
-              
               )}
             </div>
           )}

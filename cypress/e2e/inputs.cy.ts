@@ -17,7 +17,7 @@ describe("API interaction based on input change", () => {
       );
 
       // Visit the page
-      cy.visit("http://localhost:3000");
+      cy.visit("https://atmoswap.vercel.app/");
 
       // Capture the initial value of the input to check
       cy.get(`[data-testid="${checkInput}"]`)

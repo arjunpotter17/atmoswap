@@ -28,9 +28,7 @@ Features
     Able to see real swap quotes for selected tokens
     Able to swap tokens on the Solana mainnet
     Clean swap UI
+    End to End test suite for everything except the wallet integration
+    Links to coingecko for price charts
+    Visual token routemap
 
-Drawbacks
-
-    Token price history graph is not production-worthy
-    Code quality is subpar
-    Interactive token routemap is not implemented

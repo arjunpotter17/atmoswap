@@ -1,6 +1,6 @@
 describe("reverse values when reverse button is clicked", () => {
   it("reverse button clicked", () => {
-    cy.visit("http://localhost:3000");
+    cy.visit("https://atmoswap.vercel.app/");
 
     //capture initial values of dropdown-A and dropdown-B
     cy.get('[data-testid="inputA-drop"]')
