@@ -1,0 +1,56 @@
+name: Run Cypress Tests
+
+# Trigger this workflow on push or pull request to the main branch
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Step 1: Check out the latest code from the repository
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js environment
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # Specify your Node.js version
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Start the application (assuming your app is a Next.js/React app)
+      - name: Start the app
+        run: npm run start &
+        env:
+          CYPRESS_BASE_URL: http://localhost:3000 # Set this to your app's local URL
+
+      # Step 5: Run Cypress tests
+      - name: Run Cypress Tests
+        run: npm run cypress:run # Replace with your Cypress run command
+        env:
+          CI: true  # Ensure Cypress runs in CI mode
+
+      # Optionally: Store screenshots and videos from failed tests
+      - name: Upload Cypress Screenshots
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+
+      - name: Upload Cypress Videos
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: cypress-videos
+          path: cypress/videos

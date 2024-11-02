@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cypress:run": "cypress run",
+    "cypress:open": "cypress open"
   },
   "dependencies": {
     "@radix-ui/react-icons": "^1.3.1",
