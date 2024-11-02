@@ -27,7 +27,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # Step 4: Start the application (assuming your app is a Next.js/React app)
+      # Step 4: Buid the app
+      - name: Build the app
+        run: npm run build
+
+      # Step 5: Start the application (assuming your app is a Next.js/React app)
       - name: Start the app
         run: npm run start &
         env:
