@@ -64,14 +64,23 @@ export default function TokenInput({
   };
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAmount(e.target.value);
-    // @typescript-eslint/no-unused-expressions
-    if (type === "selling") {
-      setRefreshType("buying");
-    } else {
-      setRefreshType("selling");
+    const value = e.target.value;
+  
+    // Regular expression to allow only numbers and one decimal point
+    const regex = /^\d*\.?\d*$/;
+  
+    // If value matches the regex, update the amount
+    if (regex.test(value)) {
+      setAmount(value);
+  
+      // Trigger appropriate refresh type
+      if (type === "selling") {
+        setRefreshType("buying");
+      } else {
+        setRefreshType("selling");
+      }
+      setAllowFetch(true);
     }
-    setAllowFetch(true);
   };
 
   const handleActivityClick = () => {
@@ -134,7 +143,7 @@ export default function TokenInput({
                   className="w-5 h-5 mr-2"
                 />
               )}
-              <span>{selectedToken?.name}</span>
+              <span data-testid={type === 'selling' ? 'inputA-drop' : 'inputB-drop'}>{selectedToken?.name}</span>
             </div>
 
             <span className="text-2xl">
@@ -169,11 +178,13 @@ export default function TokenInput({
             </div>
           ) : (
             <input
+              data-testid={type === 'selling' ? 'inputA' : 'inputB'}
               value={amount}
               onClick={() => setActive(type)}
               onChange={handleAmountChange}
               type="text"
               placeholder="0.00"
+              inputMode="decimal"
               className="bg-transparent outline-none ring-0 text-white text-right w-full p-2 rounded-lg font-bold text-xl "
             />
           )}

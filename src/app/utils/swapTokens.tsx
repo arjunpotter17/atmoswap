@@ -14,7 +14,7 @@ export const swapTransaction = async (swapData: any, publicKey: string) => {
   const swapTransaction = await swapResponse.json();
 
   if (swapTransaction.error) {
-    throw new Error("Failed to get swap transaction: " + swapTransaction.error);
+    return new Error("Failed to get swap transaction: " + swapTransaction.error);
   }
   const swapTransactionBuf = Buffer.from(
     swapTransaction?.swapTransaction,

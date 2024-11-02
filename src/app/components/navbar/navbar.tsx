@@ -1,11 +1,12 @@
-"use client"; 
+"use client";
 import React from "react";
 import Image from "next/image";
-import logo from './atmos.png';
+import logo from "./atmos.png";
 import dynamic from "next/dynamic";
 
 const WalletMultiButtonDynamic = dynamic(
-  async () => (await import('@solana/wallet-adapter-react-ui')).WalletMultiButton,
+  async () =>
+    (await import("@solana/wallet-adapter-react-ui")).WalletMultiButton,
   { ssr: false }
 );
 
@@ -17,7 +18,9 @@ export const Navbar = () => {
         <div className="relative h-10 w-[180px] flex flex-shrink-0 brightness-[1.25] filter contrast-100 grayscale-0 hue-rotate-0 invert-0 saturate-100 sepia-0 drop-shadow-lg">
           <Image src={logo} alt="logo" fill={true} className="" />
         </div>
-        <WalletMultiButtonDynamic />
+        <div data-testid="wallet-button">
+          <WalletMultiButtonDynamic />
+        </div>
       </div>
     </div>
   );

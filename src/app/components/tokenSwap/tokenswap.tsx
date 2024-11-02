@@ -105,7 +105,9 @@ const TokenSwap = (): JSX.Element => {
   //reverse the buy and sell tokens and then fetch the price
   const handleReverse = () => {
     setAllowFetch(false);
-    setIsBuyAmountLoading(true);
+    if (sellingAmount !== "" && buyingAmount !== "") {
+      setIsBuyAmountLoading(true);
+    }
     setSellingAmount(buyingAmount);
     const tempToken = sellingToken;
     setSellingToken(buyingToken);
@@ -208,13 +210,17 @@ const TokenSwap = (): JSX.Element => {
 
       <div className="flex flex-col gap-y-5 w-full md:w-[512px]">
         <div className="w-full flex justify-between items-center">
-          <p className="text-sm text-atmos-grey-text self-end">
+          <p
+            data-testid="slippage-display"
+            className="text-sm text-atmos-grey-text self-end"
+          >
             Selected Slippage:{" "}
             <span className="text-atmos-secondary-teal">
               {slippage ? slippage : 0.5}%
             </span>
           </p>
           <button
+            data-testid="settings-button"
             className="h-12 rounded-3xl flex items-center bg-gradient-to-r from-atmos-secondary-teal via-atmos-primary-green to-atmos-secondary-teal text-atmos-navbar-bg font-bold transition-transform duration-300 hover:scale-95 px-3 py-1  hover:rotate-45"
             onClick={() => toggleSettingsPanel(isSettingsOpen, setSettingsOpen)}
           >
@@ -240,6 +246,7 @@ const TokenSwap = (): JSX.Element => {
         {/* Reverse Button */}
         <div className="flex justify-center mb-4">
           <button
+            data-testid="reverse-button"
             onClick={handleReverse}
             className="text-white text-2xl transition-transform duration-300 hover:scale-90 border rounded-[50%] hover:border-atmos-secondary-teal p-2"
             onMouseEnter={() => setIsHovered(true)}
@@ -286,6 +293,7 @@ const TokenSwap = (): JSX.Element => {
 
         {/* swap button */}
         <button
+          data-testid="swap-button"
           className="h-12 bg-gradient-to-r from-atmos-secondary-teal via-atmos-primary-green to-atmos-secondary-teal rounded-3xl text-white font-bold transition-transform duration-300 hover:scale-95"
           onClick={() => handleSwapTokens(wallet, connection, quoteResponse)}
         >

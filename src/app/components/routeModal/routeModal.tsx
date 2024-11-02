@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import ReactFlow, { Background, Edge, Node } from "react-flow-renderer";
 import { getAsset } from "@/app/utils/fetchTokenMetadata";
+import Spinner from "../spinner/spinner";
 
 type RouteSwapInfo = {
   ammKey: string;
@@ -32,7 +33,7 @@ export const RouteModal = ({
   setShowRoutesModal,
 }: RouteModalProps) => {
   const { inputMint, outputMint, routePlan } = routeData;
-
+  const [loading, setLoading] = useState<boolean>(false);
   // State to hold token names and images
   const [tokenData, setTokenData] = useState<{
     [key: string]: { name: string; image: string };
@@ -41,20 +42,21 @@ export const RouteModal = ({
   // Fetch token names and images for input and output mints
   useEffect(() => {
     const fetchTokenData = async () => {
+      setLoading(true);
       const data: { [key: string]: { name: string; image: string } } = {};
 
       // Fetch input token data
       const inputAsset = await getAsset(inputMint);
       data[inputMint] = {
         name: inputAsset.content.metadata.name || "Unknown Token",
-        image: inputAsset.content.links.image || "", // Fallback if no image is found
+        image: inputAsset.content.links.image || "", // Fallback
       };
 
       // Fetch output token data
       const outputAsset = await getAsset(outputMint);
       data[outputMint] = {
         name: outputAsset.content.metadata.name || "Unknown Token",
-        image: outputAsset.content.links.image || "", // Fallback if no image is found
+        image: outputAsset.content.links.image || "", // Fallback
       };
 
       // Fetch names for each route in the routePlan
@@ -63,12 +65,13 @@ export const RouteModal = ({
           const routeAsset = await getAsset(route.swapInfo.outputMint);
           data[route.swapInfo.outputMint] = {
             name: routeAsset.content.metadata.name || "Unknown Token",
-            image: routeAsset.content.links.image || "", // Fallback if no image is found
+            image: routeAsset.content.links.image || "", // Fallback
           };
         })
       );
 
       setTokenData(data);
+      setLoading(false);
     };
     fetchTokenData();
   }, [inputMint, outputMint, routePlan]);
@@ -76,18 +79,17 @@ export const RouteModal = ({
   // Prepare nodes based on routePlan
   const nodes = useMemo(() => {
     const inputNode: Node = {
-      id: "input",
+      id: inputMint,
       data: {
         label: (
-          <div className="flex gap-x-2 items-center rounded-lg">
+          <div className="flex flex-col gap-x-2 items-center">
             <img
               src={tokenData[inputMint]?.image}
               alt={tokenData[inputMint]?.name}
               style={{ width: "40px", height: "40px", borderRadius: "50%" }}
             />
-            {/* <div>{tokenData[inputMint]?.name || inputMint.slice(0, 4)}</div> */}
-            <div className="text-[16px]">
-              {routePlan[0]?.swapInfo.inAmount.slice(0, 4)}
+            <div className="text-[16px] font-bold">
+              {routePlan[0]?.swapInfo.inAmount.slice(0, 4) + "..."}
             </div>
           </div>
         ),
@@ -95,7 +97,8 @@ export const RouteModal = ({
       position: { x: 100, y: 200 },
       style: {
         background: "#0bd790",
-        padding: 20,
+        width: "100px",
+        height: "100px",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -104,18 +107,18 @@ export const RouteModal = ({
     };
 
     const outputNode: Node = {
-      id: "output",
+      id: outputMint,
       data: {
         label: (
-          <div className="flex gap-x-2 items-center rounded-lg">
+          <div className="flex gap-x-2 flex-col items-center">
             <img
               src={tokenData[outputMint]?.image}
               alt={tokenData[outputMint]?.name}
               style={{ width: "40px", height: "40px", borderRadius: "50%" }}
             />
-            {/* <div>{tokenData[outputMint]?.name || outputMint.slice(0, 4)}</div> */}
-            <div className="text-[16px]">
-              {routePlan[routePlan.length - 1]?.swapInfo.outAmount.slice(0, 4)}
+            <div className="text-[16px] font-bold">
+              {routePlan[routePlan.length - 1]?.swapInfo.outAmount.slice(0, 4) +
+                "..."}
             </div>
           </div>
         ),
@@ -123,7 +126,8 @@ export const RouteModal = ({
       position: { x: 800, y: 200 },
       style: {
         background: "#0bd790",
-        padding: 20,
+        width: "100px",
+        height: "100px",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -131,25 +135,52 @@ export const RouteModal = ({
       },
     };
 
-    // Create intermediary nodes for each route
-    const intermediateNodes: Node[] = routePlan.map((route, index) => {
-      const tokenName =
-        tokenData[route.swapInfo.outputMint]?.name ||
-        route.swapInfo.outputMint.slice(0, 4);
-      return {
-        id: `intermediate-${index}`,
-        data: { label: `${tokenName}` },
-        position: { x: 300 + index * 200, y: 200 },
-        style: {
-            background: "#0bd790",
-            padding: 20,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            borderRadius: "20%",
-          },
-      };
-    });
+    const uniqueMints = [inputMint, outputMint];
+
+    const intermediateNodes = routePlan
+      .map((route, index) => {
+        if (
+          !uniqueMints.includes(route.swapInfo.inputMint) ||
+          !uniqueMints.includes(route.swapInfo.outputMint)
+        ) {
+          if (!uniqueMints.includes(route.swapInfo.inputMint)) {
+            uniqueMints.push(route.swapInfo.inputMint);
+          } else {
+            uniqueMints.push(route.swapInfo.outputMint);
+          }
+          return {
+            id: route.swapInfo.ammKey,
+            data: {
+              label: (
+                <div className="flex gap-x-2 flex-col items-center">
+                  <img
+                    src={tokenData[route.swapInfo.outputMint]?.image}
+                    alt={tokenData[route.swapInfo.outputMint]?.name}
+                    style={{
+                      width: "20px",
+                      height: "20px",
+                      borderRadius: "50%",
+                    }}
+                  />
+                </div>
+              ),
+            },
+            position: { x: 400 + index * 200, y: 200 }, // Adjust positions dynamically
+            style: {
+              background: "#0bd790",
+              width: "40px",
+              height: "40px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: "20%",
+            },
+          };
+        } else {
+          return null;
+        }
+      })
+      .filter((node) => node !== null);
 
     return [inputNode, ...intermediateNodes, outputNode];
   }, [inputMint, outputMint, routePlan, tokenData]);
@@ -157,20 +188,33 @@ export const RouteModal = ({
   // Prepare edges based on routePlan
   const edges = useMemo(() => {
     return routePlan.map((route, index) => {
-      const label = `${route.percent}% via ${route.swapInfo.label}`;
+      const label = `${route.percent}% to ${
+        tokenData[route.swapInfo.outputMint]?.name || "Unknown Token"
+      } via ${route.swapInfo.label}`;
 
       return {
         id: `edge-${index}`,
-        source: index === 0 ? "input" : `intermediate-${index - 1}`,
+        source:
+          route.swapInfo.inputMint === inputMint
+            ? inputMint
+            : route.swapInfo.inputMint === outputMint
+            ? outputMint
+            : nodes.filter((node) => node.id === route.swapInfo.ammKey).length >
+              0
+            ? route.swapInfo.ammKey
+            : routePlan[index - 1].swapInfo.ammKey,
         target:
-          index === routePlan.length - 1 ? "output" : `intermediate-${index}`,
-        label,
-        animated: true,
+          route.swapInfo.outputMint === outputMint
+            ? outputMint
+            : route.swapInfo.outputMint === inputMint
+            ? inputMint
+            : route.swapInfo.ammKey,
+        label: label,
         style: { stroke: "#0dbbac" },
         arrowHeadType: "arrowclosed",
       };
     });
-  }, [routePlan]);
+  }, [routePlan, tokenData]);
 
   // State for nodes and edges
   const [reactFlowNodes, setReactFlowNodes] = React.useState<Node[]>([]);
@@ -186,19 +230,27 @@ export const RouteModal = ({
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-atmos-secondary-teal bg-opacity-10">
       <div className="bg-atmos-bg-black rounded-lg p-10 w-[80%] md:w-[800px]">
         <h2 className="text-lg font-bold mb-4">Order Route Plan</h2>
-        <div style={{ height: "300px", width: "100%" }}>
-          <ReactFlow
-            className="border border-atmos-primary-green rounded-lg flex justify-center items-center mb-4"
-            nodes={reactFlowNodes}
-            edges={reactFlowEdges}
-            fitView
-            nodesDraggable={false}
-            nodesConnectable={false} // Ensure nodes are not editable
-            panOnScroll
-          >
-            <Background />
-          </ReactFlow>
-        </div>
+        {loading ? (
+          <div className="flex flex-col gap-y-2 justify-center items-center h-[300px] w-full">
+            <Spinner size={30} />
+            <p className="text-sm text-atmos-grey-text">Sketching route...</p>
+          </div>
+        ) : (
+          <div style={{ height: "300px", width: "100%" }}>
+            <ReactFlow
+              className="border border-atmos-primary-green rounded-lg flex justify-center items-center mb-4"
+              nodes={reactFlowNodes}
+              edges={reactFlowEdges}
+              fitView
+              nodesDraggable={false}
+              nodesConnectable={false} // Ensure nodes are not editable
+              panOnScroll
+              connectionLineStyle={{ display: "none" }} 
+            >
+              <Background />
+            </ReactFlow>
+          </div>
+        )}
         <button
           onClick={() => setShowRoutesModal(false)}
           className="mt-8 bg-atmos-primary-green py-2 px-4 rounded-lg text-atmos-bg-black"
