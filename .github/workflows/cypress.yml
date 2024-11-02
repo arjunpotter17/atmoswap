@@ -1,6 +1,5 @@
 name: Run Cypress Tests
 
-# Trigger this workflow on push or pull request to the main branch
 on:
   push:
     branches:
@@ -22,7 +21,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18' # Specify your Node.js version
+          node-version: '18'
 
       # Step 3: Install dependencies
       - name: Install dependencies
@@ -32,11 +31,15 @@ jobs:
       - name: Start the app
         run: npm run start &
         env:
-          CYPRESS_BASE_URL: http://localhost:3000 # Set this to your app's local URL
+          CYPRESS_BASE_URL: http://localhost:3000
 
-      # Step 5: Run Cypress tests
+      # Step 5: Wait for the app to be available on localhost:3000
+      - name: Wait for the app to be ready
+        run: npx wait-on http://localhost:3000
+
+      # Step 6: Run Cypress tests
       - name: Run Cypress Tests
-        run: npm run cypress:run # Replace with your Cypress run command
+        run: npm run cypress:run
         env:
           CI: true  # Ensure Cypress runs in CI mode
 
