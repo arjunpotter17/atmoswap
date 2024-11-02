@@ -33,13 +33,10 @@ jobs:
         env:
           CYPRESS_BASE_URL: http://localhost:3000
 
-      # Step 5: Wait for the app to be available on localhost:3000
-      - name: Wait for the app to be ready
-        run: npx wait-on http://localhost:3000
-
       # Step 6: Run Cypress tests
       - name: Run Cypress Tests
-        run: npm run cypress:run
+        run: Cypress run
+        uses: cypress-io/github-action@v5
         env:
           CI: true  # Ensure Cypress runs in CI mode
 
