@@ -39,7 +39,7 @@ jobs:
 
       # Step 6: Run Cypress tests
       - name: Run Cypress Tests
-        run: Cypress run
+        run: npm run cypress:run
         # uses: cypress-io/github-action@v5
         env:
           CI: true  # Ensure Cypress runs in CI mode
