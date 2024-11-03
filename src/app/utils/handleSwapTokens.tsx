@@ -23,7 +23,7 @@ export const handleSwapTokens = async (
     toast.error("Please enter details to swap");
     return;
   }
-  const swappingToast = toast.loading("Swapping tokens...");
+  const swappingToast = toast.loading(<p id="swap-loading">"Swapping tokens..."</p>);
   try {
     const tx = await swapTransaction(quoteResponse, publicKey.toBase58());
     if (tx instanceof Error) {

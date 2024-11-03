@@ -21,7 +21,7 @@ describe("Slippage settings tests", () => {
   });
 
   it("should update slippage when 1% button is clicked and saved", () => {
-    // Click the 0.3% slippage button
+    // Click the 1% slippage button
     cy.get('[data-testid="slip-1-button"]').click();
     cy.get('[data-testid="slip-1-button"]').should(
       "have.class",

@@ -220,7 +220,7 @@ export const RouteModal = ({
   }, [nodes, edges]);
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 bg-atmos-secondary-teal bg-opacity-10">
+    <div data-testid="route-modal" className="fixed inset-0 flex items-center justify-center z-50 bg-atmos-secondary-teal bg-opacity-10">
       <div className="bg-atmos-bg-black rounded-lg p-10 w-[80%] md:w-[800px]">
         <h2 className="text-lg font-bold mb-4">Order Route Plan</h2>
         {loading ? (

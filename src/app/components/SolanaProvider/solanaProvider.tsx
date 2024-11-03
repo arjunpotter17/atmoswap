@@ -11,6 +11,7 @@ import { ReactNode, useCallback } from "react";
 // import "@solana/wallet-adapter-react-ui/styles.css"
 import { TooltipProvider } from "@/components/ui/tooltip";
 import "@solana/wallet-adapter-react-ui/styles.css";
+import { E2EWalletAdapter } from 'e2e-react-adapter';
 
 export const WalletButton = dynamic(
   async () =>
@@ -26,7 +27,7 @@ export function SolanaProvider({ children, endpoint }: { children: ReactNode, en
 
   return (
     <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={[]} onError={onError} autoConnect={true}>
+      <WalletProvider wallets={[new E2EWalletAdapter()]} onError={onError} autoConnect={true}>
         <WalletModalProvider>
           <TooltipProvider>{children}</TooltipProvider>
         </WalletModalProvider>

@@ -274,6 +274,7 @@ const TokenSwap = (): JSX.Element => {
         {routes?.length > 0 && (
           <div className="flex justify-between items-center">
             <button
+              data-testid="route-info-button"
               className="cursor-pointer hover:text-atmos-secondary-teal hover:border-atmos-secondary-teal text-left text-sm text-atmos-grey-text border border-atmos-grey-text w-fit rounded-lg px-2 py-1"
               onClick={() => setShowRoutesModal(true)}
             >
