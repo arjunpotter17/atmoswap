@@ -39,7 +39,7 @@ export const RouteModal = ({
     [key: string]: { name: string; image: string };
   }>({});
 
-  // Fetch token names and images for input and output mints
+  // Fetch metadata
   useEffect(() => {
     const fetchTokenData = async () => {
       setLoading(true);
@@ -49,17 +49,17 @@ export const RouteModal = ({
       const inputAsset = await getAsset(inputMint);
       data[inputMint] = {
         name: inputAsset.content.metadata.name || "Unknown Token",
-        image: inputAsset.content.links.image || "", // Fallback
+        image: inputAsset.content.links.image || "",
       };
 
       // Fetch output token data
       const outputAsset = await getAsset(outputMint);
       data[outputMint] = {
         name: outputAsset.content.metadata.name || "Unknown Token",
-        image: outputAsset.content.links.image || "", // Fallback
+        image: outputAsset.content.links.image || "",
       };
 
-      // Fetch names for each route in the routePlan
+      // Fetch for intermediate tokens
       await Promise.all(
         routePlan.map(async (route) => {
           const routeAsset = await getAsset(route.swapInfo.outputMint);
@@ -76,8 +76,9 @@ export const RouteModal = ({
     fetchTokenData();
   }, [inputMint, outputMint, routePlan]);
 
-  // Prepare nodes based on routePlan
+  // Prepare nodes
   const nodes = useMemo(() => {
+    //setup input node
     const inputNode: Node = {
       id: inputMint,
       data: {
@@ -106,6 +107,7 @@ export const RouteModal = ({
       },
     };
 
+    //setup output node
     const outputNode: Node = {
       id: outputMint,
       data: {
@@ -137,19 +139,23 @@ export const RouteModal = ({
 
     const uniqueMints = [inputMint, outputMint];
 
+    //setup an inter node for every unique mint (token) in the routemap
     const intermediateNodes = routePlan
       .map((route, index) => {
         if (
           !uniqueMints.includes(route.swapInfo.inputMint) ||
           !uniqueMints.includes(route.swapInfo.outputMint)
         ) {
+          let id;
           if (!uniqueMints.includes(route.swapInfo.inputMint)) {
             uniqueMints.push(route.swapInfo.inputMint);
+            id = route.swapInfo.inputMint;
           } else {
             uniqueMints.push(route.swapInfo.outputMint);
+            id = route.swapInfo.outputMint;
           }
           return {
-            id: route.swapInfo.ammKey,
+            id: id,
             data: {
               label: (
                 <div className="flex gap-x-2 flex-col items-center">
@@ -185,30 +191,17 @@ export const RouteModal = ({
     return [inputNode, ...intermediateNodes, outputNode];
   }, [inputMint, outputMint, routePlan, tokenData]);
 
-  // Prepare edges based on routePlan
+  // Prepare edges
   const edges = useMemo(() => {
     return routePlan.map((route, index) => {
       const label = `${route.percent}% to ${
         tokenData[route.swapInfo.outputMint]?.name || "Unknown Token"
       } via ${route.swapInfo.label}`;
-
+  
       return {
         id: `edge-${index}`,
-        source:
-          route.swapInfo.inputMint === inputMint
-            ? inputMint
-            : route.swapInfo.inputMint === outputMint
-            ? outputMint
-            : nodes.filter((node) => node.id === route.swapInfo.ammKey).length >
-              0
-            ? route.swapInfo.ammKey
-            : routePlan[index - 1].swapInfo.ammKey,
-        target:
-          route.swapInfo.outputMint === outputMint
-            ? outputMint
-            : route.swapInfo.outputMint === inputMint
-            ? inputMint
-            : route.swapInfo.ammKey,
+        source: route.swapInfo.inputMint,
+        target: route.swapInfo.outputMint,
         label: label,
         style: { stroke: "#0dbbac" },
         arrowHeadType: "arrowclosed",
@@ -220,7 +213,7 @@ export const RouteModal = ({
   const [reactFlowNodes, setReactFlowNodes] = React.useState<Node[]>([]);
   const [reactFlowEdges, setReactFlowEdges] = React.useState<Edge[]>([]);
 
-  // Update the state when routeData or token data change
+  // Update when routeData or token data change
   useEffect(() => {
     setReactFlowNodes(nodes);
     setReactFlowEdges(edges);
@@ -245,7 +238,6 @@ export const RouteModal = ({
               nodesDraggable={false}
               nodesConnectable={false} // Ensure nodes are not editable
               panOnScroll
-              connectionLineStyle={{ display: "none" }} 
             >
               <Background />
             </ReactFlow>
@@ -253,7 +245,7 @@ export const RouteModal = ({
         )}
         <button
           onClick={() => setShowRoutesModal(false)}
-          className="mt-8 bg-atmos-primary-green py-2 px-4 rounded-lg text-atmos-bg-black"
+          className="mt-8 bg-atmos-primary-green hover:scale-95 transition-all py-2 px-4 rounded-lg text-atmos-bg-black"
         >
           Close
         </button>
