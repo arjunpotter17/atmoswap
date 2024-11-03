@@ -23,21 +23,25 @@ jobs:
         with:
           node-version: '18'
 
-      # Step 3: Install dependencies
-      - name: Install dependencies
-        run: npm install
+      # Step 3: Install yarn (npm does not resolve dependencies correctly for the local wallet)
+      - name: Install yarn
+        run: npm install -g yarn
 
-      # Step 4: Buid the app
+      # Step 4: Install dependencies
+      - name: Install dependencies
+        run: yarn
+
+      # Step 5: Buid the app
       - name: Build the app
         run: npm run build
 
-      # Step 5: Start the application (assuming your app is a Next.js/React app)
+      # Step 6: Start the application (assuming your app is a Next.js/React app)
       - name: Start the app
         run: npm run start &
         env:
           CYPRESS_BASE_URL: http://localhost:3000
 
-      # Step 6: Run Cypress tests
+      # Step 7: Run Cypress tests
       - name: Run Cypress Tests
         run: npm run cypress:run
         # uses: cypress-io/github-action@v5
