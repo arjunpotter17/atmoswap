@@ -1,4 +1,4 @@
-import { TokenInfo } from "../../constants/tokens";
+import { TokenInfo } from "../types/tokenTypes";
 import { checkPrice } from "./checkPrice";
 
 export const fetchPriceData = async (

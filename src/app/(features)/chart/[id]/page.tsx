@@ -150,6 +150,7 @@ export default function CandlestickChart(): JSX.Element {
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 px-0 md:px-4">
         <div className="flex flex-col md:flex-row gap-5 w-full justify-center md:justify-start md:items-center px-4">
           <button
+            data-testid="chart-back"
             className="self-start bg-gradient-to-r from-atmos-secondary-teal via-atmos-primary-green to-atmos-secondary-teal text-atmos-navbar-bg font-bold w-full px-4 py-2 text-sm md:text-lg rounded-lg transition-transform duration-300 hover:scale-95 max-w-fit"
             onClick={() => router.push("/")}
           >
@@ -171,6 +172,7 @@ export default function CandlestickChart(): JSX.Element {
         <div className="max-w-fit flex gap-x-2">
           {timeFrameOptions.map((option) => (
             <button
+              data-testid={`view-${option.value}`}
               key={option.value}
               onClick={() => setTimeFrame(option.value)}
               className={`px-2 py-1 rounded-lg transition-all duration-200 text-sm md:text-md text-nowrap ${
