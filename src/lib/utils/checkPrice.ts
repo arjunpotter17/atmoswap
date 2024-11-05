@@ -1,6 +1,6 @@
 import { toast } from "sonner";
-import { TokenInfo } from "../../constants/tokens";
 import { swapFunds } from "./swapQuote";
+import { TokenInfo } from "../types/tokenTypes";
 
 export const checkPrice = async (tokenA:TokenInfo, tokenAmount:number, tokenB:TokenInfo, slippage:number) => {
     try {
