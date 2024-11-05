@@ -21,7 +21,11 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@components/*": ["./src/components/*"],
+      "@utils/*": ["./src/lib/utils/*"],       
+      "@hooks/*": ["./src/lib/utils/hooks/*"],   
+      "@types/*":["./src/lib/types/*"],     
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "cypress/**/*.ts"],
