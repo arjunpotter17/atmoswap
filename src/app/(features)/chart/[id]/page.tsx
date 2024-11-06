@@ -187,9 +187,9 @@ export default function CandlestickChart(): JSX.Element {
         </div>
       </div>
 
-      <div data-testid="chart-container" className="border border-atmos-grey-text p-3 rounded-lg mx-4 min-h-[450px]">
+      <div className="border border-atmos-grey-text p-3 rounded-lg mx-4 min-h-[450px]">
         {ohlcData ? (
-          <div ref={chartContainerRef} className="chart-container relative">
+          <div ref={chartContainerRef} data-testid="chart-container" className="chart-container relative">
             <div
               className={`absolute top-0 left-0 z-50 flex gap-x-3 text-white p-2 mx-4 rounded-lg mb-4 w-fit min-h-12 ${
                 ohlc ? "bg-gray-900" : "bg-transparent"
