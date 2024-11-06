@@ -20,10 +20,12 @@ export const handleSwapTokens = async (
   }
 
   if (!quoteResponse) {
-    toast.error("Please enter details to swap");
+    toast.error(<p id="input-error">Please enter details to swap</p>);
     return;
   }
-  const swappingToast = toast.loading(<p id="swap-loading">Swapping tokens...</p>);
+  const swappingToast = toast.loading(
+    <p id="swap-loading">Swapping tokens...</p>
+  );
   try {
     const tx = await swapTransaction(quoteResponse, publicKey.toBase58());
     if (tx instanceof Error) {
