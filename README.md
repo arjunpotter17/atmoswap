@@ -25,10 +25,10 @@ Project Overview
 This project aims to build a swap interface along with price analysis for the selected tokens.
 Features
 
-    Able to see real swap quotes for selected tokens
+    Able to see real swap quotes for available tokens
     Able to swap tokens on the Solana mainnet
     Clean swap UI
-    End to End test suite for everything except the wallet integration
-    Links to coingecko for price charts
+    End to End test suite for everything except actually swapping tokens
+    Links to custom charts for token prices
     Visual token routemap
 
